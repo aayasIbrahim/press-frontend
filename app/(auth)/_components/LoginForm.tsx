@@ -1,15 +1,23 @@
-
-"use client"
+"use client";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import React from "react";
-import { createLogin } from "../_action/action";
+import React, { useActionState, useEffect } from "react";
+import { createLogin } from "../_action/authActions";
+import { toast } from "sonner";
 
 function LoginForm() {
+  const [state, formAction, isPending] = useActionState(createLogin, null);
+
+  useEffect(() => {
+    if (!state) return;
+    if (!state.success) {
+      toast.error(state.message);
+    } 
+  }, [state]);
   return (
-    <form action={createLogin} className="space-y-4">
+    <form action={formAction} className="space-y-4">
       <Card className="p-5 space-y-4">
         <Input name="email" type="email" placeholder="enter your email" />
         <Input
@@ -17,7 +25,9 @@ function LoginForm() {
           type="password"
           placeholder="enter your password"
         />
-        <Button variant={"outline"}type="submit">Log in</Button>
+        <Button variant={"outline"} type="submit">
+          {isPending ? "submitting..." : "log in"}
+        </Button>
       </Card>
     </form>
   );
