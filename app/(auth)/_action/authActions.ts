@@ -2,6 +2,8 @@
 
 import { IUser } from "@/lib/type";
 import { cookies } from "next/headers";
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { redirect } from "next/navigation";
 // import { redirect } from "next/navigation";
 
 export type loginState = {
@@ -47,8 +49,14 @@ export const createLogin = async (
       sameSite: "lax",
     });
   }
-  // redirect("/");
-
+  const decodeaccsseToken = jwt.decode(result.data.accessToken) as JwtPayload;
+  if (decodeaccsseToken.role === "USER") {
+    redirect("/dashboard");
+  } else if (decodeaccsseToken.role === "AUTHOR") {
+    redirect("/author-dashboard");
+  } else if (decodeaccsseToken.role === "ADMIN") {
+    redirect("/admin-dashboard");
+  }
   return result;
 };
 

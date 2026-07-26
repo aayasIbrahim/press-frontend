@@ -123,9 +123,14 @@ export function Navbar({ user }: NavbarProps) {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
+            <>
+            <Link href="/register">
+              <Button className="cursor-pointer">Sign Up</Button>
+            </Link>
             <Link href="/login">
               <Button className="cursor-pointer">Login</Button>
             </Link>
+            </>
           )}
 
           {/* Hamburger Menu Icon (Mobile Only) */}
