@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { NewsCard } from "@/app/(public)/_components/news/NewsCard";
 import { IPost } from "@/lib/type";
 
