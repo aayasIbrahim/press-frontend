@@ -1,14 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  Menu,
-  X,
-  Boxes,
-  User,
-  Settings,
-  LogOut,
-} from "lucide-react";
+import { Menu, X, Boxes, User, Settings, LogOut } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -27,7 +20,7 @@ import { logout } from "@/services/logout";
 
 // Nav links stored in an array
 const navLinks = [
-  { label: "Home", href: "#" },
+  { label: "News", href: "/news" },
   { label: "Features", href: "#features" },
   { label: "Pricing", href: "#pricing" },
   { label: "About", href: "#about" },
@@ -91,7 +84,7 @@ export function Navbar({ user }: NavbarProps) {
                         {user.data?.profile.name}
                       </p>
                       <p className="text-xs text-muted-foreground leading-none">
-                       {user.data?.profile.email}
+                        {user.data?.profile.email}
                       </p>
                     </div>
                   </DropdownMenuLabel>
@@ -116,20 +109,23 @@ export function Navbar({ user }: NavbarProps) {
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem onClick={async()=>await logout()} className="cursor-pointer text-destructive focus:text-destructive">
-                  <LogOut  className="w-4 h-4 mr-2" />
+                <DropdownMenuItem
+                  onClick={async () => await logout()}
+                  className="cursor-pointer text-destructive focus:text-destructive"
+                >
+                  <LogOut className="w-4 h-4 mr-2" />
                   <span>Log out</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
             <>
-            <Link href="/register">
-              <Button className="cursor-pointer">Sign Up</Button>
-            </Link>
-            <Link href="/login">
-              <Button className="cursor-pointer">Login</Button>
-            </Link>
+              <Link href="/register">
+                <Button className="cursor-pointer">Sign Up</Button>
+              </Link>
+              <Link href="/login">
+                <Button className="cursor-pointer">Login</Button>
+              </Link>
             </>
           )}
 
