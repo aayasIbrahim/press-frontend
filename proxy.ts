@@ -7,6 +7,7 @@ import { getnewAccessToken } from "./services/refreshToken";
 // import { getnewAccessToken } from "./services/refreshToken";
 
 const AUTH_ROUTES = ["/login", "/register"];
+const PUBLIC_ROUTES = ["/", "/news"];
 
 // This function can be marked `async` if using `await` inside
 export async function proxy(request: NextRequest) {
@@ -56,7 +57,7 @@ export async function proxy(request: NextRequest) {
   if (decodedAccessToken?.success && decodedAccessToken.data) {
     userRole = (decodedAccessToken.data as JwtPayload).role;
   }
-   //user is logged in and trying to access login or register page, redirect to dashboard or root home page
+  //user is logged in and trying to access login or register page, redirect to dashboard or root home page
   if (accesstoken && AUTH_ROUTES.includes(pathname)) {
     if (userRole === "USER") {
       return NextResponse.redirect(new URL("/dashboard", request.url));
@@ -66,6 +67,35 @@ export async function proxy(request: NextRequest) {
       return NextResponse.redirect(new URL("/author-dashboard", request.url));
     }
   }
+  const publicRoutes = PUBLIC_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(route + "/"),
+  );
+  const authRoutes = AUTH_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(route + "/"),
+  );
+  // Authenticated Pages Protection
+  if (!accesstoken && !authRoutes && !publicRoutes) {
+    const loginUrl = new URL("/login", request.url);
+
+    loginUrl.searchParams.set("redirectTo", pathname);
+   // make this==> http://localhost:3000/login?redirectTo=%2Fprimium
+
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // Authorization : Role based access control
+  if (pathname.startsWith("/dashboard") && userRole !== "USER") {
+    return NextResponse.redirect(new URL("/not-found", request.url));
+  } else if (pathname.startsWith("/admin-dashboard") && userRole !== "ADMIN") {
+    return NextResponse.redirect(new URL("/not-found", request.url));
+  } else if (
+    pathname.startsWith("/author-dashboard") &&
+    userRole !== "AUTHOR"
+  ) {
+    return NextResponse.redirect(new URL("/not-found", request.url));
+  }
+
+
   return NextResponse.next();
 }
 
