@@ -13,10 +13,6 @@ export const getMe = async () => {
   }
   const res = await fetch(`${process.env.BACKEND_URL}/api/users/me`, {
     headers: {
-      // Authorization : accessToken as unknown as string,
-      // Authorization : `${accessToken}`,
-      // Authorization : `Bearer ${accessToken}`
-
       Cookie: `accessToken=${accessToken}`,
     },
     cache: "force-cache",

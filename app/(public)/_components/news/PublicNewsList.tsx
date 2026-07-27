@@ -1,16 +1,15 @@
-
 import { NewsCard } from "@/app/(public)/_components/news/NewsCard";
 import { IPost } from "@/lib/type";
+import { getNewsPost } from "../../_actions/getNewsPost";
 
-export async function PublicNewsList() {
-  const getPosts = async () => {
-    "use server";
-    const res = await fetch(`${process.env.BACKEND_URL}/api/posts`);
-    const results = await res.json();
-    return results;
-  };
-  
-  const result = await getPosts();
+export async function PublicNewsList({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const query = await searchParams;
+  console.log("q",query)
+  const result = await getNewsPost({ query });
 
   if (!result.success || !result.data?.length) {
     return (

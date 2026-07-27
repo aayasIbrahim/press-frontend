@@ -4,7 +4,6 @@ import { NextRequest } from "next/server";
 import { jwtUtils } from "./utils/jwt";
 import { JwtPayload } from "jsonwebtoken";
 import { getnewAccessToken } from "./services/refreshToken";
-// import { getnewAccessToken } from "./services/refreshToken";
 
 const AUTH_ROUTES = ["/login", "/register"];
 const PUBLIC_ROUTES = ["/", "/news"];
@@ -22,6 +21,7 @@ export async function proxy(request: NextRequest) {
         process.env.JWT_REFRESH_SECRET!,
       )
     : null;
+
   let decodedAccessToken = accesstoken
     ? jwtUtils.verifyToken(
         accesstoken as string,
@@ -34,12 +34,14 @@ export async function proxy(request: NextRequest) {
     const result = await getnewAccessToken();
     if (result.success) {
       const newAccessToken = result.data.newAccessToken;
+
       cookieStore.set("accessToken", newAccessToken, {
         httpOnly: true,
         maxAge: 60 * 60 * 24,
         sameSite: "lax",
       });
       accesstoken = newAccessToken;
+
       decodedAccessToken = accesstoken
         ? jwtUtils.verifyToken(
             accesstoken as string,
@@ -78,7 +80,7 @@ export async function proxy(request: NextRequest) {
     const loginUrl = new URL("/login", request.url);
 
     loginUrl.searchParams.set("redirectTo", pathname);
-   // make this==> http://localhost:3000/login?redirectTo=%2Fprimium
+    // make this==> http://localhost:3000/login?redirectTo=%2Fprimium
 
     return NextResponse.redirect(loginUrl);
   }
@@ -94,7 +96,6 @@ export async function proxy(request: NextRequest) {
   ) {
     return NextResponse.redirect(new URL("/not-found", request.url));
   }
-
 
   return NextResponse.next();
 }
