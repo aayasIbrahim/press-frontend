@@ -1,5 +1,4 @@
-import { cookies } from "next/headers";
-import { getSinglePost } from "../../_actions/getSinglePost";
+import { getSinglePost } from "../../_actions/postAction";
 
 export default async function Page({
   params,
@@ -8,8 +7,8 @@ export default async function Page({
 }) {
   const { id } = await params;
 
-  const post = await getSinglePost(id as string)
-  console.log(post)
+  const post = await getSinglePost(id as string);
+  console.log(post);
   // if(result.success&&result.data){}
 
   return <div>My Post: {id}</div>;

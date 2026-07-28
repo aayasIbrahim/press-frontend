@@ -1,6 +1,6 @@
 import { NewsCard } from "@/app/(public)/_components/news/NewsCard";
 import { IPost } from "@/lib/type";
-import { getNewsPost } from "../../_actions/getNewsPost";
+import { getNewsPost } from "../../_actions/postAction"
 
 export async function PublicNewsList({
   searchParams,
@@ -8,7 +8,7 @@ export async function PublicNewsList({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const query = await searchParams;
-  console.log("q",query)
+  
   const result = await getNewsPost({ query });
 
   if (!result.success || !result.data?.length) {
