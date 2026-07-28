@@ -19,7 +19,7 @@ function NewsSearchBar() {
       params.delete("searchTerm");
     }
     router.replace(`${pathName}?${params.toString()}`);
-    // Replace the current URL with the new search parameters
+    // Replace the current URL with the new search parameters hit the link and  the qurey form backend
   };
 
   return (
