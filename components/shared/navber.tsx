@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, X, Boxes, User, Settings, LogOut } from "lucide-react";
+import {
+  Menu,
+  X,
+  Boxes,
+  User,
+  Settings,
+  LogOut,
+  LogOutIcon,
+} from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
@@ -31,10 +39,19 @@ const navLinks = [
 const userMenuItems = [
   { label: "Profile", icon: User, action: "profile" },
   { label: "Settings", icon: Settings, action: "settings" },
+  { label: "log out", icon: LogOutIcon, action: "logOut" },
 ];
+// if (action === "logOut") {
+//   await logout();
+// }
 
 export function Navbar({ user }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const handleUsermMenuAction = async (action: string) => {
+    if (action === "logOut") {
+      await logout();
+    }
+  };
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen((prev) => !prev);
@@ -98,6 +115,7 @@ export function Navbar({ user }: NavbarProps) {
                     return (
                       <DropdownMenuItem
                         key={item.action}
+                        onClick={() => handleUsermMenuAction(item.action)}
                         className="cursor-pointer"
                       >
                         <Icon className="w-4 h-4 mr-2" />
@@ -109,13 +127,13 @@ export function Navbar({ user }: NavbarProps) {
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem
+                {/* <DropdownMenuItem
                   onClick={async () => await logout()}
                   className="cursor-pointer text-destructive focus:text-destructive"
                 >
                   <LogOut className="w-4 h-4 mr-2" />
                   <span>Log out</span>
-                </DropdownMenuItem>
+                </DropdownMenuItem> */}
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (

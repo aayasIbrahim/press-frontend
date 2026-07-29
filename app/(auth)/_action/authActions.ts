@@ -16,6 +16,7 @@ export type loginState = {
   };
 };
 export const createLogin = async (
+  redirectTo: string,
   prevState: loginState | null,
   formData: FormData,
 ) => {
@@ -34,6 +35,9 @@ export const createLogin = async (
   });
 
   const result: loginState = await res.json();
+  if (!result.success) {
+    return result;
+  }
 
   if (result.success) {
     const cookieStore = await cookies();
@@ -48,6 +52,14 @@ export const createLogin = async (
       maxAge: 60 * 60 * 24 * 7,
       sameSite: "lax",
     });
+  }
+  if (
+    redirectTo &&
+    typeof redirectTo === "string" &&
+    redirectTo.startsWith("/") &&
+    !redirectTo.startsWith("//")
+  ) {
+    redirect(redirectTo);
   }
   const decodeaccsseToken = jwt.decode(result.data.accessToken) as JwtPayload;
   if (decodeaccsseToken.role === "USER") {
