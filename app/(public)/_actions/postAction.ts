@@ -5,9 +5,8 @@ export const getNewsPost = async ({
 }: {
   query?: { [key: string]: string | string[] | undefined };
 }) => {
-  const params = new URLSearchParams();
+  const params: URLSearchParams = new URLSearchParams();
 
-  
   //pro logic
 
   // if (query) {
@@ -45,6 +44,22 @@ export const getNewsPost = async ({
     params.set("tags", tagsValue);
   } else if (query && query.status) {
     params.set("status", query.status as string);
+  }
+  if (query?.page) {
+    params.set("page", String(query.page));
+  }
+
+  if (query?.limit) {
+    params.set("limit", String(query.limit));
+  }
+
+  // ৫. Sorting parameters
+  if (query?.sortBy) {
+    params.set("sortBy", query.sortBy as string);
+  }
+
+  if (query?.sortOrder) {
+    params.set("sortOrder", query.sortOrder as string);
   }
 
   const res = await fetch(
