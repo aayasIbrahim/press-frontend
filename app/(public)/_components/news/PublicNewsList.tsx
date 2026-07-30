@@ -1,6 +1,7 @@
 import { NewsCard } from "@/app/(public)/_components/news/NewsCard";
 import { IPost } from "@/lib/type";
 import { getNewsPost } from "../../_actions/postAction"
+import { NewsPagination } from "./NewsPagination";
 
 export async function PublicNewsList({
   searchParams,
@@ -10,6 +11,7 @@ export async function PublicNewsList({
   const query = await searchParams;
   
   const result = await getNewsPost({ query });
+
 
   if (!result.success || !result.data?.length) {
     return (
@@ -24,6 +26,8 @@ export async function PublicNewsList({
           <NewsCard key={post.id} post={post} />
         ))}
       </div>
+ 
+      <NewsPagination currentPage={result.meta.page} totalPages={result.meta.totalPages} />
     </div>
   );
 }
