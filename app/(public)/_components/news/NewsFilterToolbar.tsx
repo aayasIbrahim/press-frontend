@@ -8,56 +8,94 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+// import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export function NewsFilterBar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  // URL থেকে বর্তমান sortBy এবং sortOrder এর মান পড়া
+  // URL থেকে মানগুলো পড়া
+  const searchTerm = searchParams.get("searchTerm") || "";
   const sortBy = searchParams.get("sortBy") || "createdAt";
   const sortOrder = searchParams.get("sortOrder") || "desc";
 
-  // ড্রপডাউনের বর্তমান সিলেক্টেড ভ্যালু
-  const currentValue = `${sortBy}-${sortOrder}`;
-
+  // Sorting পাল্টানোর হ্যান্ডলার
   const handleSortChange = (value: string | null) => {
     if (!value) return;
-    // "createdAt-asc" থেকে sortBy="createdAt" এবং sortOrder="asc" আলাদা করা
-    const [selectedSortBy, selectedSortOrder] = value.split("-");
 
+    const [selectedSortBy, selectedSortOrder] = value.split("-");
     const params = new URLSearchParams(searchParams.toString());
 
-    // URL এ sortBy এবং sortOrder সেট করা
     params.set("sortBy", selectedSortBy);
     params.set("sortOrder", selectedSortOrder);
-    
-    params.set("page", "1"); // ফিল্টার পাল্টালে ১ নম্বর পেজে নিয়ে যাওয়া
+    params.set("page", "1"); // সর্টিং পাল্টালে প্রথম পেজে নিয়ে যাবে
 
-    // URL আপডেট: /news?sortBy=createdAt&sortOrder=asc
     router.replace(`${pathname}?${params.toString()}`);
   };
 
+  // Search করার হ্যান্ডলার (Enter বা টাইপ করার জন্য)
+  // const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   const formData = new FormData(e.currentTarget);
+  //   const search = (formData.get("search") as string)?.trim() || "";
+  //   const params = new URLSearchParams(searchParams.toString());
+
+  //   if (search) {
+  //     params.set("searchTerm", search);
+  //   } else {
+  //     params.delete("searchTerm"); // ইনপুট খালি থাকলে URL থেকে মুছে ফেলা
+  //   }
+
+  //   params.set("page", "1"); // সার্চ করলে প্রথম পেজে নিয়ে যাবে
+  //   router.replace(`${pathname}?${params.toString()}`);
+  // };
+
+  // ফিল্টার রিসেট করার হ্যান্ডলার
+  const handleReset = () => {
+    router.replace(pathname);
+  };
+
+  const currentValue = `${sortBy}-${sortOrder}`;
+
   return (
-    <div className="flex items-center gap-2">
-      <Select value={currentValue} onValueChange={handleSortChange}>
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Sort By" />
-        </SelectTrigger>
-        <SelectContent>
-          {/* Newest First -> sortBy=createdAt&sortOrder=desc */}
-          <SelectItem value="createdAt-desc">Newest First</SelectItem>
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 bg-card p-4 rounded-lg border shadow-sm my-6">
+      {/* Search Input Box */}
+      {/* <form onSubmit={handleSearch} className="flex items-center gap-2 w-full sm:w-auto">
+        <Input
+          type="text"
+          name="search"
+          placeholder="Search news..."
+          defaultValue={searchTerm}
+          className="w-full sm:w-[250px]"
+        />
+        <Button type="submit" variant="secondary">
+          Search
+        </Button>
+      </form> */}
 
-          {/* Oldest First -> sortBy=createdAt&sortOrder=asc */}
-          <SelectItem value="createdAt-asc">Oldest First</SelectItem>
+      {/* Sorting & Reset Section */}
+      <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+        <Select value={currentValue} onValueChange={handleSortChange}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Sort By" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="createdAt-desc">Newest First</SelectItem>
+            <SelectItem value="createdAt-asc">Oldest First</SelectItem>
+            <SelectItem value="views-desc">Most Viewed</SelectItem>
+            <SelectItem value="title-asc">Title (A-Z)</SelectItem>
+          </SelectContent>
+        </Select>
 
-          {/* Most Viewed -> sortBy=views&sortOrder=desc */}
-          <SelectItem value="views-desc">Most Viewed</SelectItem>
-
-          {/* Title (A-Z) -> sortBy=title&sortOrder=asc */}
-          <SelectItem value="title-asc">Title (A-Z)</SelectItem>
-        </SelectContent>
-      </Select>
+        {/* Clear Filter Button (যদি কোনো সার্চ বা ফিল্টার সক্রিয় থাকে) */}
+        {(searchTerm || searchParams.toString().length > 0) && (
+          <Button variant="outline" onClick={handleReset}>
+            Reset
+          </Button>
+        )}
+      </div>
     </div>
   );
 }
