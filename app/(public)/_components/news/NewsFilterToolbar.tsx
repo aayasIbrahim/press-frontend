@@ -17,7 +17,7 @@ export function NewsFilterBar() {
   const router = useRouter();
 
   // URL থেকে মানগুলো পড়া
-  const searchTerm = searchParams.get("searchTerm") || "";
+  // const searchTerm = searchParams.get("searchTerm") || "";
   const sortBy = searchParams.get("sortBy") || "createdAt";
   const sortOrder = searchParams.get("sortOrder") || "desc";
 
@@ -90,11 +90,10 @@ export function NewsFilterBar() {
         </Select>
 
         {/* Clear Filter Button (যদি কোনো সার্চ বা ফিল্টার সক্রিয় থাকে) */}
-        {(searchTerm || searchParams.toString().length > 0) && (
-          <Button variant="outline" onClick={handleReset}>
-            Reset
-          </Button>
-        )}
+
+        <Button variant="outline" onClick={handleReset}>
+          Reset
+        </Button>
       </div>
     </div>
   );
